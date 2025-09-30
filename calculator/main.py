@@ -22,7 +22,6 @@ def main():
         else:
             print("Error: Expression is empty or contains only whitespace.")
     except Exception as e:
-        #dsadsa
         print(f"Error: {e}")
 
 

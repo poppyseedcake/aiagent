@@ -1,5 +1,6 @@
 import os
 import subprocess
+import sys
 
 def run_python_file(working_directory, file_path, args=[]):
 
@@ -14,10 +15,28 @@ def run_python_file(working_directory, file_path, args=[]):
     if not file_path.endswith(".py"):
         return f'Error: "{file_path}" is not a Python file.'
 
-    result = subprocess.run([sys.executable, abs_file_path, args], capture_output=True, text=True, timeout=30, check=True)
+    try:
+        result = subprocess.run(
+            [sys.executable, abs_file_path, *args],
+            capture_output=True,
+            text=True,
+            timeout=30)
 
-    response = f"STDOUT: {result.stdout}/n"
-    response = f"STDERR: {result.stderr}/n"
+        if not result.stdout and result.stderr:
+            return "No output produced."
 
+        response = []
+
+        if result.stdout:
+            response.append(f"STDOUT: {result.stdout}")
+
+        if result.stderr:
+            response.append(f"STDERR: {result.stderr}")
+
+        if result.returncode != 0:
+            response.append(f"Process exited with code {result.returncode}")
     
-    return response
+        return "\n".join(response)
+
+    except Exception as e:
+        return f"Error: executing Python file: {e}"

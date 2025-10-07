@@ -33,6 +33,7 @@ def call_function(function_call_part, verbose=False):
 
     function_name = function_call_part.name
     args = function_call_part.args.copy()
+    print(f"args: {args}")
     args["working_directory"] = "./calculator"
     func = FUNCTION_MAP.get(function_name)
 

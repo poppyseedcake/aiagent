@@ -52,8 +52,11 @@ def generate_content(client, messages, user_prompt, verbose):
     #    print(response.text)
     if response.function_calls:    
         for function_call in response.function_calls:
-            print(call_function(function_call))
-
+            result = call_function(function_call, verbose)
+            if not result.parts[0].function_response.response:
+                raise Exception("fatal error")
+            if verbose:
+                print(f"-> {result.parts[0].function_response.response}")
 
 if __name__ == "__main__":
     main()

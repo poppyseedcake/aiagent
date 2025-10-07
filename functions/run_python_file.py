@@ -42,7 +42,7 @@ def run_python_file(working_directory, file_path, args=[]):
             capture_output=True,
             text=True,
             timeout=30)
-
+        print(f"run file results: {result}")
         if not result.stdout and result.stderr:
             return "No output produced."
 

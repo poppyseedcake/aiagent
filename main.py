@@ -31,27 +31,19 @@ def main():
         types.Content(role="user", parts=[types.Part(text=user_prompt)]),
     ]
 
-    generate_content(client, messages, user_prompt, verbose)
+    generate_content(client, messages, verbose)
 
-def generate_content(client, messages, user_prompt, verbose):
+def generate_content(client, messages, verbose):
     response = client.models.generate_content(
         model="gemini-2.0-flash-001",
         contents=messages,
         config=types.GenerateContentConfig(
             tools=[available_functions], system_instruction=system_prompt),
     )
-    #if verbose:
-    #    print(f"Response text: {response.text}")
-    #if response.function_calls:    
-    #    for function_call in response.function_calls:
-    #        result = call_function(function_call, verbose)
-    #        if not result.parts[0].function_response.response:
-    #            raise Exception("fatal error")
-    #        if verbose:
-    #            print(f"-> {result.parts[0].function_response.response["result"]}")
-    #else:
-    #    print(f"Response text: {response.text}") 
-    # python
+
+    for cand in response.candidates:
+        messages.append(cand.content)
+
     if response.function_calls:
         for function_call in response.function_calls:
             result = call_function(function_call, verbose)

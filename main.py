@@ -35,6 +35,7 @@ def main():
         try:
             response = generate_content(client, messages, verbose)
             if not response == None:
+                print("Final response:")
                 print(response)
                 break 
         except Exception as e:
@@ -71,10 +72,10 @@ def generate_content(client, messages, verbose):
             messages.append(message)
 
             output = resp["result"]
-            if verbose:
-                print(f"-> {output}")
-            else:
-                print(output)
+            #if verbose:
+            #    print(f"-> {output}")
+            #else:
+            #    print(output)
     else:
         if response.text:
             return response.text

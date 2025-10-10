@@ -31,8 +31,14 @@ def main():
         types.Content(role="user", parts=[types.Part(text=user_prompt)]),
     ]
 
-    generate_content(client, messages, verbose)
-# todo
+    for i in range(20):
+        try:
+            response = generate_content(client, messages, verbose)
+            if not response == None:
+                print(response)
+                break 
+        except Exception as e:
+            return f"Error: {e}"
 
 def generate_content(client, messages, verbose):
     response = client.models.generate_content(
@@ -51,6 +57,19 @@ def generate_content(client, messages, verbose):
             resp = result.parts[0].function_response.response
             if not resp or "result" not in resp:
                 raise Exception("fatal error")
+            
+            message = types.Content(
+                role="user",
+                parts=[
+                    types.Part.from_function_response(
+                        name=result.parts[0].function_response.name,
+                        response=resp,
+                    )
+                ],
+            )
+
+            messages.append(message)
+
             output = resp["result"]
             if verbose:
                 print(f"-> {output}")
@@ -58,6 +77,6 @@ def generate_content(client, messages, verbose):
                 print(output)
     else:
         if response.text:
-            print(response.text)
+            return response.text
 if __name__ == "__main__":
     main()
